@@ -12,5 +12,6 @@ model Booking {
   guestName      String
   unitID         String
   checkInDate    DateTime
+  checkOutDate   DateTime
   numberOfNights Int
 }
