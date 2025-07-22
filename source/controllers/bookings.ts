@@ -75,6 +75,29 @@ async function isBookingPossible(booking: Booking): Promise<bookingOutcome> {
         return {result: false, reason: "The same guest cannot be in multiple units at the same time"};
     }
 
+    
+    /*
+    OPTIMIZED VERSION OF CHECK 2 :
+    This can be the optimized version of check 2.
+    Currently, the guest is allowed to perform only one booking.
+    Through this, The guest will be able to book different units and at different time durations.
+    */
+    /*
+    let newCheckInDate = new Date(booking.checkInDate);
+    let newCheckOutDate = new Date(newCheckInDate.getTime() + booking.numberOfNights * 24 * 60 * 60 * 1000);    
+    for (const bookingOfSameGuest of sameGuestAlreadyBooked) {
+
+        if(newCheckInDate < bookingOfSameGuest.checkOutDate)
+        {
+            if(newCheckOutDate > bookingOfSameGuest.checkInDate)
+            {
+                return {result: false, reason: "The same guest cannot be in multiple units at the same time"};
+            }
+        }
+    }
+    */
+
+
     // check 3 : Unit is available for the check-in date    
     let newBookingCheckInDate = new Date(booking.checkInDate);
     let newBookingCheckOutDate = new Date(newBookingCheckInDate.getTime() + booking.numberOfNights * 24 * 60 * 60 * 1000);
@@ -100,7 +123,7 @@ async function isBookingPossible(booking: Booking): Promise<bookingOutcome> {
             {
                 if(newBookingCheckOutDate > existingBookingCheckInDate)
                 {
-                    return {result: false, reason: "For the given check-in date, the unit is already occupied"};
+                    return {result: false, reason: "For the given dates, the unit is already occupied"};
                 }
             }
     } 
