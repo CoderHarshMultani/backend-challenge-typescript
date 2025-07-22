@@ -45,17 +45,17 @@ describe('Booking API', () => {
         const response = await axios.post('http://localhost:8000/api/v1/booking', GUEST_A_UNIT_1);
 
         expect(response.status).toBe(200);
-        expect(response.data.guestName).toBe(GUEST_A_UNIT_1.guestName);
-        expect(response.data.unitID).toBe(GUEST_A_UNIT_1.unitID);
-        expect(response.data.numberOfNights).toBe(GUEST_A_UNIT_1.numberOfNights);
+        expect(response.data.booking.guestName).toBe(GUEST_A_UNIT_1.guestName);
+        expect(response.data.booking.unitID).toBe(GUEST_A_UNIT_1.unitID);
+        expect(response.data.booking.numberOfNights).toBe(GUEST_A_UNIT_1.numberOfNights);
     });
 
     test('Same guest same unit booking', async () => {
         // Create first booking
         const response1 = await axios.post('http://localhost:8000/api/v1/booking', GUEST_A_UNIT_1);
         expect(response1.status).toBe(200);
-        expect(response1.data.guestName).toBe(GUEST_A_UNIT_1.guestName);
-        expect(response1.data.unitID).toBe(GUEST_A_UNIT_1.unitID);
+        expect(response1.data.booking.guestName).toBe(GUEST_A_UNIT_1.guestName);
+        expect(response1.data.booking.unitID).toBe(GUEST_A_UNIT_1.unitID);
 
         // Guests want to book the same unit again
         let error: any;
@@ -74,8 +74,8 @@ describe('Booking API', () => {
         // Create first booking
         const response1 = await axios.post('http://localhost:8000/api/v1/booking', GUEST_A_UNIT_1);
         expect(response1.status).toBe(200);
-        expect(response1.data.guestName).toBe(GUEST_A_UNIT_1.guestName);
-        expect(response1.data.unitID).toBe(GUEST_A_UNIT_1.unitID);
+        expect(response1.data.booking.guestName).toBe(GUEST_A_UNIT_1.guestName);
+        expect(response1.data.booking.unitID).toBe(GUEST_A_UNIT_1.unitID);
 
         // Guest wants to book another unit
         let error: any;
@@ -94,8 +94,8 @@ describe('Booking API', () => {
         // Create first booking
         const response1 = await axios.post('http://localhost:8000/api/v1/booking', GUEST_A_UNIT_1);
         expect(response1.status).toBe(200);
-        expect(response1.data.guestName).toBe(GUEST_A_UNIT_1.guestName);
-        expect(response1.data.unitID).toBe(GUEST_A_UNIT_1.unitID);
+        expect(response1.data.booking.guestName).toBe(GUEST_A_UNIT_1.guestName);
+        expect(response1.data.booking.unitID).toBe(GUEST_A_UNIT_1.unitID);
 
         // GuestB trying to book a unit that is already occupied
         let error: any;
@@ -107,14 +107,14 @@ describe('Booking API', () => {
 
         expect(error).toBeInstanceOf(AxiosError);
         expect(error.response.status).toBe(400);
-        expect(error.response.data.error).toEqual('For the given check-in date, the unit is already occupied');
+        expect(error.response.data.error).toEqual('For the given dates, the unit is already occupied');
     });
 
     test('Different guest same unit booking different date', async () => {
         // Create first booking
         const response1 = await axios.post('http://localhost:8000/api/v1/booking', GUEST_A_UNIT_1);
         expect(response1.status).toBe(200);
-        expect(response1.data.guestName).toBe(GUEST_A_UNIT_1.guestName);
+        expect(response1.data.booking.guestName).toBe(GUEST_A_UNIT_1.guestName);
 
         // GuestB trying to book a unit that is already occupied
         let error: any;
@@ -131,6 +131,6 @@ describe('Booking API', () => {
 
         expect(error).toBeInstanceOf(AxiosError);
         expect(error.response.status).toBe(400);
-        expect(error.response.data.error).toEqual('For the given check-in date, the unit is already occupied');
+        expect(error.response.data.error).toEqual('For the given dates, the unit is already occupied');
     });
 });
