@@ -192,6 +192,7 @@ async function isExtensionPossible(existingBooking: any, additionalNights: numbe
 
     for (const booking of existingBookingsForUnit) {
 
+        // Skip the current booking
         if (booking.id == existingBooking.id) {
             continue;
         }
