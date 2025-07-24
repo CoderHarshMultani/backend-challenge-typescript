@@ -100,7 +100,9 @@ async function isBookingPossible(booking: Booking): Promise<bookingOutcome> {
 
     // check 3 : Unit is available for the check-in date    
     let newBookingCheckInDate = new Date(booking.checkInDate);
+    let newBookingCheckInMs = newBookingCheckInDate.getTime();
     let newBookingCheckOutDate = new Date(newBookingCheckInDate.getTime() + booking.numberOfNights * 24 * 60 * 60 * 1000);
+    let newBookingCheckOutMs = newBookingCheckOutDate.getTime();
     
     let existingBookingsForUnit = await prisma.booking.findMany({
         where: {
@@ -113,15 +115,17 @@ async function isBookingPossible(booking: Booking): Promise<bookingOutcome> {
     for (const existingBooking of existingBookingsForUnit) {
 
         let existingBookingCheckInDate = new Date(existingBooking.checkInDate);
+        let existingBookingCheckInMs = existingBookingCheckInDate.getTime();
         let existingBookingCheckOutDate = new Date(existingBooking.checkOutDate);
+        let existingBookingCheckOutMs = existingBookingCheckOutDate.getTime();  
         
         /*
         I identified 12 scenarios that can occur while booking a unit.
         The following if statements returns an error message during the 8 failing cases.
         */
-        if(newBookingCheckInDate < existingBookingCheckOutDate)
+        if(newBookingCheckInMs < existingBookingCheckOutMs)
             {
-                if(newBookingCheckOutDate > existingBookingCheckInDate)
+                if(newBookingCheckOutMs > existingBookingCheckInMs)
                 {
                     return {result: false, reason: "For the given dates, the unit is already occupied"};
                 }
@@ -181,6 +185,7 @@ type extensionOutcome = {result: boolean, reason: string};
 async function isExtensionPossible(existingBooking: any, additionalNights: number): Promise<extensionOutcome> {
     
     let newCheckOutDate = new Date(existingBooking.checkOutDate.getTime() + additionalNights * 24 * 60 * 60 * 1000);
+    let newCheckOutMs = newCheckOutDate.getTime();
 
     let existingBookingsForUnit = await prisma.booking.findMany({
         where: {
@@ -198,14 +203,17 @@ async function isExtensionPossible(existingBooking: any, additionalNights: numbe
         }
 
         let bookingCheckInDate = new Date(booking.checkInDate);
+        let bookingCheckInMs = bookingCheckInDate.getTime();
+        let existingBookingCheckInDate = new Date(existingBooking.checkInDate);
+        let existingBookingCheckInMs = existingBookingCheckInDate.getTime();        
 
         /*
         I identified 6 scenarios that can occur while extending a booking.
         The following if statements returns an error message during the 2 failing cases.
         */
-        if(existingBooking.checkInDate < bookingCheckInDate)
+        if(existingBookingCheckInMs < bookingCheckInMs)
         {
-            if(newCheckOutDate > bookingCheckInDate)
+            if(newCheckOutMs > bookingCheckInMs)
             {
                 return {result: false, reason: "The unit is not available for the requested extension period"};
             }
